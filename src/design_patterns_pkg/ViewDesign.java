@@ -32,6 +32,7 @@ import gui_pkg.MainUserPanel;
 import gui_pkg.PaymentPanel;
 import gui_pkg.ReviewOrderPanel;
 import gui_pkg.UserInvoicesPanel;
+import gui_pkg.UserStockPanel;
 import person_pkg.Customer;
 import person_pkg.Employee;
 import reserv_pkg.CreditCard;
@@ -515,6 +516,13 @@ public class ViewDesign {
 			Main.getM_ReviewOrder().getBtnLogin().setVisible(true);
 			Main.getM_ReviewOrder().getBtnDiscount().setVisible(false);
 		}
+		
+	}
+
+
+
+	public void SetManageStock(DefaultTableModel dtm) {
+		UserStockPanel.getTableStock().setModel(dtm);
 		
 	}
 }	

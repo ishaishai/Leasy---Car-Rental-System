@@ -34,6 +34,10 @@ public class MyMouseListener implements MouseListener {
 		{
 			DirPanel.getM_Controller().LoadInvoices();
 		}
+		else if(event.getSource() == UserSideMenu.getBtnViewVehicles())
+		{
+			DirPanel.getM_Controller().LoadStock();
+		}
 		else if((event.getSource() instanceof JTable))
 		{
 			if((event.getSource()==UserInvoicesPanel.getTableInvoices()))

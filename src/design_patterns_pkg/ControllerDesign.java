@@ -46,6 +46,9 @@ public class ControllerDesign
 		m_View.setRelevantVehicles();
 	}
 	
+
+
+
 	public void SetVehicleDetails()
 	{
 		m_Model.FindSelectedCarDetails(m_View.GetSelectedVehicle());
@@ -338,5 +341,10 @@ public class ControllerDesign
 		m_View.ChangeUserScreen(MainUserPanel.getM_UserInvoices());
 	}
 
+
+	public void LoadStock() {
+		m_View.SetManageStock(m_Model.GetCompanyStock());
+		m_View.ChangeUserScreen(MainUserPanel.getM_UserStockPanel());
+	}
 
 }

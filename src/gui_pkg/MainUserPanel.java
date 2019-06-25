@@ -11,6 +11,7 @@ public class MainUserPanel extends BasePanel
 	private static UserSideMenu m_SideMenu;
 	private static MenuMainPanel m_MenuMain;
 	private static UserInvoicesPanel m_UserInvoices;
+	private static UserStockPanel m_UserStockPanel;
 	private static JLayeredPane m_layeredPaneTop;
 	
 	public MainUserPanel()
@@ -18,7 +19,7 @@ public class MainUserPanel extends BasePanel
 		m_SideMenu = new UserSideMenu();
 		m_MenuMain = new MenuMainPanel();
 		m_UserInvoices = new UserInvoicesPanel();
-		
+		m_UserStockPanel = new UserStockPanel();
 		m_UserInvoices.setLayout(null);
 
 		m_layeredPaneTop = new JLayeredPane();
@@ -71,6 +72,11 @@ public class MainUserPanel extends BasePanel
 
 	public static final void setM_layeredPaneTop(JLayeredPane m_layeredPaneTop) {
 		MainUserPanel.m_layeredPaneTop = m_layeredPaneTop;
+	}
+
+
+	public static final UserStockPanel getM_UserStockPanel() {
+		return m_UserStockPanel;
 	}
 
 
