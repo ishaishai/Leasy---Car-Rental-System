@@ -7,16 +7,12 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
+
+import gui_customized_comp.BasePanel;
+import gui_customized_comp.BaseTextArea;
+import listeners_pkg.MyMouseListener;
+import gui_customized_comp.BaseLabel;
 
 public class ReviewOrderPanel extends BasePanel implements ActionListener {
 	private BaseTextArea TxtVehicle;
@@ -30,25 +26,21 @@ public class ReviewOrderPanel extends BasePanel implements ActionListener {
 	public ReviewOrderPanel()
 	{
 		TxtVehicle = new BaseTextArea("Vehicle details:");
-		//TxtVehicle.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Vehicle Details:", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		TxtVehicle.setLocation(194, 87);
 		
 		add(TxtVehicle);
 		
 		TxtFullDetails = new BaseTextArea("Customer details:");
-		//TxtFullDetails.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Customer Details:", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		TxtFullDetails.setBounds(464, 87, 250, 150);
+		TxtFullDetails.setBounds(464, 87, 250, 264);
 		
 		add(TxtFullDetails);
 		
 		TxtInsurance = new BaseTextArea("Insurance details:");
-		//TxtInsurance.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Insurance Details:", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		TxtInsurance.setBounds(734, 87, 250, 150);
 		add(TxtInsurance);
 		
 		TxtPrice = new BaseTextArea("Total price:");
-		//TxtPrice.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Final Price:", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		TxtPrice.setBounds(548, 347, 107, 60);
+		TxtPrice.setBounds(516, 436, 140, 60);
 		add(TxtPrice);
 		
 		
@@ -77,6 +69,11 @@ public class ReviewOrderPanel extends BasePanel implements ActionListener {
 		btnDiscount.setContentAreaFilled(false);
 		btnDiscount.setIcon(new ImageIcon("Resources\\Imgs\\discount.png"));
 		btnDiscount.addActionListener(this);
+		
+		BaseLabel bslblFinalReview = new BaseLabel();
+		bslblFinalReview.setText("Final review:");
+		bslblFinalReview.setBounds(194, 27, 132, 30);
+		add(bslblFinalReview);
 		btnDiscount.setVisible(false);
 		
 		
@@ -128,7 +125,4 @@ public class ReviewOrderPanel extends BasePanel implements ActionListener {
 		}
 		
 	}
-
-	
-	
 }

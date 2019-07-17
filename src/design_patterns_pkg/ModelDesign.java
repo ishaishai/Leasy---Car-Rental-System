@@ -6,7 +6,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.table.DefaultTableModel;
@@ -14,7 +17,6 @@ import javax.swing.table.DefaultTableModel;
 import enums_pkg.Gear;
 import enums_pkg.OS;
 import enums_pkg.Rank;
-import gui_pkg.Main;
 import person_pkg.Customer;
 import person_pkg.Employee;
 import reserv_pkg.CreditCard;
@@ -36,15 +38,14 @@ public class ModelDesign
 		
 	}
 
-	public void getRelevantVehicles(String rank)
+	protected HashMap<String,Vehicle>  getRelevantVehicles(String rank)
 	{
 		try {
 			/*Converts the date object we had to a string in the shape of yyyy-mm-dd.
 			to see the old date object remove the // from the command below */
-			//System.out.println(DataManager.getInstance().getM_Reserv().getM_Start());
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			String fromDate = sdf.format(DataManager.getInstance().getM_Reserv().getM_Start());
-			String toDate = sdf.format(DataManager.getInstance().getM_Reserv().getM_End());
+			
+			String fromDate = DataManager.getInstance().getM_Reserv().getM_Start();
+			String toDate = DataManager.getInstance().getM_Reserv().getM_End();
 			
 			Statement statement = DataManager.getInstance().getM_SqlLink().getM_Connection().createStatement();
 			
@@ -84,6 +85,8 @@ public class ModelDesign
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		return DataManager.getInstance().getM_Vehicles();
 	}
 	
 	private void BuildCaravanArray(ResultSet resultset) {
@@ -92,24 +95,7 @@ public class ModelDesign
 			while (resultset.next())
 			{
 				vehicle = VehicleFactory.CreateVehicle("caravan");
-				/*
-				DataManager.getInstance().getM_Vehicles().add(new Caravan(resultset.getString("Plate"),
-                		Integer.parseInt(resultset.getString("EngineCC")),
-                        Integer.parseInt(resultset.getString("Doors")),
-                        Integer.parseInt(resultset.getString("Seats")),
-                        Integer.parseInt(resultset.getString("Luggage")),
-                        resultset.getString("Model"),
-                        Rank.valueOf(resultset.getString("Rank")),
-                        Gear.getGear(resultset.getString("Gear")),
-                        resultset.getDouble("Height"),
-						resultset.getBoolean("Tow"),
-						resultset.getInt("Beds"),
-						resultset.getBoolean("Shower"),
-						resultset.getBoolean("Toilet"),
-						resultset.getBoolean("Kitchen"),
-                        Integer.parseInt(resultset.getString("Price"))
-                        ));
-                 */
+				
 				((Caravan)vehicle).setM_plate(resultset.getString("Plate"));
 				((Caravan)vehicle).setM_EngineCC(Integer.parseInt(resultset.getString("EngineCC")));
 				((Caravan)vehicle).setM_Doors(Integer.parseInt(resultset.getString("Doors")));
@@ -117,15 +103,15 @@ public class ModelDesign
 				((Caravan)vehicle).setM_Laggage(Integer.parseInt(resultset.getString("Luggage")));
 				((Caravan)vehicle).setM_Model(resultset.getString("Model"));
 				((Caravan)vehicle).setM_Rank(Rank.valueOf(resultset.getString("Rank")));
-				((Caravan)vehicle).setM_Gear(Gear.getGear(resultset.getString("Gear")));
-				((Caravan)vehicle).setM_Height(resultset.getDouble("Height"));
+				((Caravan)vehicle).setM_Gear(Gear.getGear(resultset.getInt("Gear")));
+				((Caravan)vehicle).setM_Height(resultset.getInt("Height"));
 				((Caravan)vehicle).setM_Tow(resultset.getBoolean("Tow"));
 				((Caravan)vehicle).setM_Beds(resultset.getInt("Beds"));
 				((Caravan)vehicle).setM_Shower(resultset.getBoolean("Shower"));
 				((Caravan)vehicle).setM_Toilet(resultset.getBoolean("Toilet"));
 				((Caravan)vehicle).setM_Kitchen(resultset.getBoolean("Kitchen"));
 				((Caravan)vehicle).setM_Price(Integer.parseInt(resultset.getString("Price")));
-				DataManager.getInstance().getM_Vehicles().add(vehicle);
+				DataManager.getInstance().getM_Vehicles().put(vehicle.getM_Model(),vehicle);
 			}
 		} catch (SQLException e) {
             e.printStackTrace();
@@ -146,25 +132,13 @@ public class ModelDesign
 				((AutonomousCar)vehicle).setM_Laggage(Integer.parseInt(resultset.getString("Luggage")));
 				((AutonomousCar)vehicle).setM_Model(resultset.getString("Model"));
 				((AutonomousCar)vehicle).setM_Rank(Rank.valueOf(resultset.getString("Rank")));
-				((AutonomousCar)vehicle).setM_Gear(Gear.getGear(resultset.getString("Gear")));
+				((AutonomousCar)vehicle).setM_Gear(Gear.getGear(resultset.getInt("Gear")));
 				((AutonomousCar)vehicle).setM_Hybrid(resultset.getBoolean("Hybrid"));
 				((AutonomousCar)vehicle).setM_OS(OS.getOS(resultset.getString("OS")));
 				((AutonomousCar)vehicle).setM_Price(Integer.parseInt(resultset.getString("Price")));
-				DataManager.getInstance().getM_Vehicles().add(vehicle);
+				DataManager.getInstance().getM_Vehicles().put(vehicle.getM_Model(),vehicle);
 				
 				
-				/*DataManager.getInstance().getM_Vehicles().add(new AutonomousCar(resultset.getString("Plate"),
-                		Integer.parseInt(resultset.getString("EngineCC")),
-                        Integer.parseInt(resultset.getString("Doors")),
-                        Integer.parseInt(resultset.getString("Seats")),
-                        Integer.parseInt(resultset.getString("Luggage")),
-                        resultset.getString("Model"),
-                        Rank.valueOf(resultset.getString("Rank")),
-                        Gear.getGear(resultset.getString("Gear")),
-                        resultset.getBoolean("Hybrid"),
-                        OS.getOS(resultset.getString("OS")),
-                        Integer.parseInt(resultset.getString("Price"))
-                        ));*/
 				
 			}
 		} catch (SQLException e) {
@@ -172,6 +146,7 @@ public class ModelDesign
     }
 		
 	}
+	
 	private void BuildFamilyArray(ResultSet resultset) 
 	{
 		Vehicle vehicle;
@@ -180,21 +155,6 @@ public class ModelDesign
 	        {       
 	        	vehicle = VehicleFactory.CreateVehicle("family");
 	        	
-	        	/*
-	                DataManager.getInstance().getM_Vehicles().add(new Family(resultset.getString("Plate"),
-	                		Integer.parseInt(resultset.getString("EngineCC")),
-	                        Integer.parseInt(resultset.getString("Doors")),
-	                        Integer.parseInt(resultset.getString("Seats")),
-	                        Integer.parseInt(resultset.getString("Luggage")),
-	                        resultset.getString("Model"),
-	                        Rank.valueOf(resultset.getString("Rank")),
-	                        Gear.getGear(resultset.getString("Gear")),
-	                        resultset.getBoolean("Hybrid"),
-	                        resultset.getBoolean("Hatchback"),
-	                        Integer.parseInt(resultset.getString("Price"))
-	                        ));
-	            */
-	        	
 	        	((Family)vehicle).setM_plate(resultset.getString("Plate"));
 				((Family)vehicle).setM_EngineCC(Integer.parseInt(resultset.getString("EngineCC")));
 				((Family)vehicle).setM_Doors(Integer.parseInt(resultset.getString("Doors")));
@@ -202,11 +162,11 @@ public class ModelDesign
 				((Family)vehicle).setM_Laggage(Integer.parseInt(resultset.getString("Luggage")));
 				((Family)vehicle).setM_Model(resultset.getString("Model"));
 				((Family)vehicle).setM_Rank(Rank.valueOf(resultset.getString("Rank")));
-				((Family)vehicle).setM_Gear(Gear.getGear(resultset.getString("Gear")));
+				((Family)vehicle).setM_Gear(Gear.getGear(resultset.getInt("Gear")));
 				((Family)vehicle).setM_Hybrid(resultset.getBoolean("Hybrid"));
 				((Family)vehicle).setM_Hatchback(resultset.getBoolean("Hatchback"));
 				((Family)vehicle).setM_Price(Integer.parseInt(resultset.getString("Price")));
-	        	DataManager.getInstance().getM_Vehicles().add(vehicle);
+	        	DataManager.getInstance().getM_Vehicles().put(vehicle.getM_Model(),vehicle);
 	        }
 	    } catch (SQLException e) {
 	            e.printStackTrace();
@@ -219,24 +179,6 @@ public class ModelDesign
 		Vehicle vehicle;
 		try {
 			while(resultset.next()) {
-				
-				
-				/*
-				//every vehicle needs to be sent to its proper constructor
-				DataManager.getInstance().getM_Vehicles().add(new WorkCar(resultset.getString("Plate"),
-						resultset.getInt("EngineCC"),
-						resultset.getInt("Doors"),
-						resultset.getInt("Seats"),
-						resultset.getInt("Luggage"),
-						resultset.getString("Model"),
-						Rank.valueOf(resultset.getString("Rank")),
-						Gear.getGear(resultset.getString("Gear")),
-						resultset.getDouble("Height"),
-						resultset.getBoolean("Tow"),
-						resultset.getBoolean("Dual"),
-						resultset.getInt("Price")
-						));
-						*/
 				vehicle = VehicleFactory.CreateVehicle("work");
 				((WorkCar)vehicle).setM_plate(resultset.getString("Plate"));
 				((WorkCar)vehicle).setM_EngineCC(Integer.parseInt(resultset.getString("EngineCC")));
@@ -245,12 +187,12 @@ public class ModelDesign
 				((WorkCar)vehicle).setM_Laggage(Integer.parseInt(resultset.getString("Luggage")));
 				((WorkCar)vehicle).setM_Model(resultset.getString("Model"));
 				((WorkCar)vehicle).setM_Rank(Rank.valueOf(resultset.getString("Rank")));
-				((WorkCar)vehicle).setM_Gear(Gear.getGear(resultset.getString("Gear")));
-				((WorkCar)vehicle).setM_Height(resultset.getDouble("Height"));
+				((WorkCar)vehicle).setM_Gear(Gear.getGear(resultset.getInt("Gear")));
+				((WorkCar)vehicle).setM_Height(resultset.getInt("Height"));
 				((WorkCar)vehicle).setM_Tow(resultset.getBoolean("Tow"));
 				((WorkCar)vehicle).setM_Dual(resultset.getBoolean("Dual"));
 				((WorkCar)vehicle).setM_Price(Integer.parseInt(resultset.getString("Price")));
-				DataManager.getInstance().getM_Vehicles().add(vehicle);
+				DataManager.getInstance().getM_Vehicles().put(vehicle.getM_Model(),vehicle);
 				
 				
 			}//			
@@ -266,22 +208,6 @@ public class ModelDesign
 		Vehicle vehicle;
 		try {
 			while(resultset.next()) {
-				//every vehicle needs to be sent to its proper constructor
-				 /*
-				DataManager.getInstance().getM_Vehicles().add(new Jeep(resultset.getString("Plate"),
-						Integer.parseInt(resultset.getString("EngineCC")),
-						Integer.parseInt(resultset.getString("Doors")),
-						Integer.parseInt(resultset.getString("Seats")),
-						Integer.parseInt(resultset.getString("Luggage")),
-						resultset.getString("Model"),
-						Rank.valueOf(resultset.getString("Rank")),
-						Gear.getGear(resultset.getString("Gear")),
-						Double.parseDouble(resultset.getString("Height")),
-						(resultset.getBoolean("Tow")),
-						(resultset.getBoolean("Dirt")),
-						Integer.parseInt(resultset.getString("Price"))
-						)); */
-				
 				vehicle = VehicleFactory.CreateVehicle("jeep");
 				((Jeep)vehicle).setM_plate(resultset.getString("Plate"));
 				((Jeep)vehicle).setM_EngineCC(Integer.parseInt(resultset.getString("EngineCC")));
@@ -290,12 +216,12 @@ public class ModelDesign
 				((Jeep)vehicle).setM_Laggage(Integer.parseInt(resultset.getString("Luggage")));
 				((Jeep)vehicle).setM_Model(resultset.getString("Model"));
 				((Jeep)vehicle).setM_Rank(Rank.valueOf(resultset.getString("Rank")));
-				((Jeep)vehicle).setM_Gear(Gear.getGear(resultset.getString("Gear")));
-				((Jeep)vehicle).setM_Height(resultset.getDouble("Height"));
+				((Jeep)vehicle).setM_Gear(Gear.getGear(resultset.getInt("Gear")));
+				((Jeep)vehicle).setM_Height(resultset.getInt("Height"));
 				((Jeep)vehicle).setM_Tow(resultset.getBoolean("Tow"));
 				((Jeep)vehicle).setM_Dirt(resultset.getBoolean("Dirt"));
 				((Jeep)vehicle).setM_Price(Integer.parseInt(resultset.getString("Price")));
-				DataManager.getInstance().getM_Vehicles().add(vehicle);
+				DataManager.getInstance().getM_Vehicles().put(vehicle.getM_Model(),vehicle);
 			}//			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -308,21 +234,6 @@ public class ModelDesign
 		Vehicle vehicle;
 		try {
 			while(resultset.next()) {
-				//every vehicle needs to be sent to its proper constructor
-				/*
-				DataManager.getInstance().getM_Vehicles().add(new Luxury(resultset.getString("Plate"),
-						resultset.getInt("EngineCC"),
-						resultset.getInt("Doors"),
-						resultset.getInt("Seats"),
-						resultset.getInt("Luggage"),
-						resultset.getString("Model"),
-						Rank.valueOf(resultset.getString("Rank")),
-						Gear.getGear(resultset.getString("Gear")),
-						resultset.getBoolean("Hybrid"),
-						resultset.getBoolean("Panoramic"),
-						resultset.getInt("Price")
-						));
-				*/
 				vehicle = VehicleFactory.CreateVehicle("luxury");
 				((Luxury)vehicle).setM_plate(resultset.getString("Plate"));
 				((Luxury)vehicle).setM_EngineCC(Integer.parseInt(resultset.getString("EngineCC")));
@@ -331,11 +242,11 @@ public class ModelDesign
 				((Luxury)vehicle).setM_Laggage(Integer.parseInt(resultset.getString("Luggage")));
 				((Luxury)vehicle).setM_Model(resultset.getString("Model"));
 				((Luxury)vehicle).setM_Rank(Rank.valueOf(resultset.getString("Rank")));
-				((Luxury)vehicle).setM_Gear(Gear.getGear(resultset.getString("Gear")));
+				((Luxury)vehicle).setM_Gear(Gear.getGear(resultset.getInt("Gear")));
 				((Luxury)vehicle).setM_Hybrid(resultset.getBoolean("Hybrid"));
 				((Luxury)vehicle).setM_Panoramic(resultset.getBoolean("Panoramic"));
 				((Luxury)vehicle).setM_Price(Integer.parseInt(resultset.getString("Price")));
-	        	DataManager.getInstance().getM_Vehicles().add(vehicle);
+	        	DataManager.getInstance().getM_Vehicles().put(vehicle.getM_Model(),vehicle);
 			}//			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -349,19 +260,10 @@ public class ModelDesign
 				DataManager.getInstance().getM_Reserv().getM_DriveXP());
 	}
 	
-	public final void FindSelectedCarDetails(String m_Model)
+	protected final Vehicle FindSelectedCarDetails(String m_Model)
 	{
-		//run select specific vehicle in Model and set in View
-	//	m_Model = (String) Main.getM_selectCarPanel().getCarComboBox().getModel().getSelectedItem();
-		
-		for(Vehicle v : DataManager.getInstance().getM_Vehicles())
-		{
-			if(v.getM_Model().equals(m_Model))
-			{
-				DataManager.getInstance().setM_SelectedVehicle(v);
-				return;
-			}
-		}
+		DataManager.getInstance().setM_SelectedVehicle(DataManager.getInstance().getM_Vehicles().get(m_Model));
+		return DataManager.getInstance().getM_SelectedVehicle();
 	}
 
 	public boolean SetLoggedEmployee(Employee employee) {
@@ -383,7 +285,7 @@ public class ModelDesign
 		{
 			try {	
 				System.out.println(resultset.getString("Username"));
-				DataManager.getInstance().setM_Employee(new Employee(resultset.getString("Username"),resultset.getString("Password"),resultset.getString("PCode")));
+				DataManager.getInstance().setM_Employee(new Employee(resultset.getString("Username"),resultset.getString("Password")));
 				return true;
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -394,16 +296,16 @@ public class ModelDesign
 		return false;
 	}
 	
-
-	public String getLoggedEmployee() {
+	protected String getLoggedEmployee() {
 		if(!(DataManager.getInstance().getM_Employee() == null))
 			return DataManager.getInstance().getM_Employee().getM_Username();
 		return null;
 		
 	}
 	
-	public void PullInsurances()
+	protected List<Insurance> PullInsurances()
 	{
+		
 		Statement statement = null;
 		ResultSet resultset = null;
 		
@@ -427,9 +329,10 @@ public class ModelDesign
 				
 			}
 		}
+		return DataManager.getInstance().getM_Insurances();
 	}
 	
-	private Statement createStatement()
+	public Statement createStatement()
 	{
 		Statement statement = null;
 		try {
@@ -442,7 +345,7 @@ public class ModelDesign
 		return statement;
 	}
 
-	public void SetSelectedInsurance(char selected) {
+	protected void SetSelectedInsurance(char selected) {
 		switch(selected)
 		{
 		case 'A':
@@ -463,26 +366,40 @@ public class ModelDesign
 		}
 	}
 
-	public void SetFirstDetails(Reservation reservation) {
+	protected void SetFirstDetails(Reservation reservation) {
 		DataManager.getInstance().setM_Reserv(reservation);
 		DataManager.getInstance().setM_SelectedVehicle(null);
 	}
 
-	public void SetFullDetails(Customer customer) {
+	public String SetFullDetails(Customer customer) {
 		customer.setM_Age(DataManager.getInstance().getM_Reserv().getM_CustomerAge());
 		customer.setM_DriveXP(DataManager.getInstance().getM_Reserv().getM_DriveXP());
-		customer.setM_Rank(DataManager.getInstance().getM_SelectedVehicle().getM_Rank());
+		customer.setM_Rank(Rank.getRank(DataManager.getInstance().getM_Reserv().getM_CustomerAge(), DataManager.getInstance().getM_Reserv().getM_DriveXP()));
 		DataManager.getInstance().setM_Customer(customer);	
+		return SaveCustomer();
 		
 	}
 
-	public DefaultTableModel GetInvoices() {
+	protected DefaultTableModel GetInvoices() {
+			return getRelevantDefaultTableModel("select * from Invoice");
+	}
+
+	protected DefaultTableModel GetCompanyStock() {
+		return getRelevantDefaultTableModel("select * from Vehicle");
+	}
+	
+	protected DefaultTableModel GetCompanyCustomers() {
+		return getRelevantDefaultTableModel("select * from Customer");
+	}
+	
+	private DefaultTableModel getRelevantDefaultTableModel(String query)
+	{
 		Statement statement = createStatement();
 		ResultSet resultset = null;
 		Vector<String> columnNames = new Vector<String>();
 		
 		try {
-			resultset = statement.executeQuery("select * from Invoice");
+			resultset = statement.executeQuery(query);
 			ResultSetMetaData metaData = resultset.getMetaData();
 			
 			for(int i=1;i<=metaData.getColumnCount();i++)
@@ -499,41 +416,12 @@ public class ModelDesign
 			data.add(vector);
 			}
 			
-			return new DefaultTableModel(data, columnNames);
-			
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		
-		return null;
-	}
-
-	public DefaultTableModel GetCompanyStock() {
-		Statement statement = createStatement();
-		ResultSet resultset = null;
-		Vector<String> columnNames = new Vector<String>();
-		
-		try {
-			resultset = statement.executeQuery("select * from Vehicle");
-			ResultSetMetaData metaData = resultset.getMetaData();
-			
-			for(int i=1;i<=metaData.getColumnCount();i++)
-			{
-				columnNames.add(metaData.getColumnName(i));
-			}
-			
-			Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-			while (resultset.next()) {
-			    Vector<Object> vector = new Vector<Object>();
-			    for (int columnIndex = 1; columnIndex <= metaData.getColumnCount(); columnIndex++) {
-			        vector.add(resultset.getObject(columnIndex));
+			return new DefaultTableModel(data, columnNames) {
+				public boolean isCellEditable(int row, int column)
+			    {
+			      return false; //This causes all cells to be not editable
 			    }
-			data.add(vector);
-			}
-			
-			return new DefaultTableModel(data, columnNames);
+			};
 			
 			
 		} catch (SQLException e) {
@@ -542,10 +430,9 @@ public class ModelDesign
 		
 		
 		return null;
-		
 	}
 
-	public String SetReservDiscount(String discount) {
+	protected String SetReservDiscount(String discount) {
 		int dis = Integer.parseUnsignedInt(discount);
 		int totalprice = DataManager.getInstance().getM_Invoice().getM_TotalPrice();
 		
@@ -555,33 +442,33 @@ public class ModelDesign
 		
 	}
 	
-	public void setFinalPrice()
+	protected void setFinalPrice()
 	{
 		DataManager.getInstance().getM_Invoice().setM_TotalPrice(DataManager.getInstance().getM_SelectedVehicle().getM_Price()*(DataManager.getInstance().getM_Reserv().getM_End().compareTo(DataManager.getInstance().getM_Reserv().getM_Start())) + 
 				DataManager.getInstance().getM_SelectedInsurance().getM_DailyPrice()*(DataManager.getInstance().getM_Reserv().getM_End().compareTo(DataManager.getInstance().getM_Reserv().getM_Start())));
 	}
 	
-	public Vehicle getSelectedVehicle() {
+	protected Vehicle getSelectedVehicle() {
 		return DataManager.getInstance().getM_SelectedVehicle();
 	}
 
-	public Insurance getSelectedInsurance() {
+	protected Insurance getSelectedInsurance() {
 		return DataManager.getInstance().getM_SelectedInsurance();
 	}
 
-	public Reservation getReserv() {
+	protected Reservation getReserv() {
 		return DataManager.getInstance().getM_Reserv();
 	}
 
-	public Customer getCustomer() {
+	protected Customer getCustomer() {
 		return DataManager.getInstance().getM_Customer();
 	}
 
-	public int getFinalPrice() {
+	protected int getFinalPrice() {
 		return DataManager.getInstance().getM_Invoice().getM_TotalPrice();
 	}
 
-	public String SetFinalInvoice(CreditCard m_CreditCard) {
+	protected void SetFinalInvoice(CreditCard m_CreditCard) {
 		DataManager.getInstance().getM_Invoice().setM_InvoiceNum(getNextInvoiceNum());
 		DataManager.getInstance().getM_Invoice().setM_Reserv(DataManager.getInstance().getM_Reserv());
 		DataManager.getInstance().getM_Invoice().setM_Ioffer(DataManager.getInstance().getM_SelectedInsurance());
@@ -589,35 +476,40 @@ public class ModelDesign
 		DataManager.getInstance().getM_Invoice().setM_Customer(DataManager.getInstance().getM_Customer());
 		DataManager.getInstance().getM_Invoice().setM_CreditCard(m_CreditCard);
 
-		return SaveInvoice();
 	}
 
-	
-
-	private final String SaveInvoice() {
-		
+	private final String SaveCustomer()
+	{
 		Statement statement = createStatement();
-		ResultSet resultset = null;
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		
-		Invoice invoice = DataManager.getInstance().getM_Invoice();
-		//insret into customer
 		try {
 			
-			String query = ("INSERT INTO Customer VALUES('" + invoice.getM_Customer().getM_ID() + "','" + invoice.getM_Customer().getM_Name() + "'," + invoice.getM_Customer().getM_Age() + "," 
-												+ invoice.getM_Customer().getM_DriveXP() + "," + (Rank.getRank(invoice.getM_Customer().getM_Age(), invoice.getM_Customer().getM_DriveXP())).ordinal() + ",'"
-												+ invoice.getM_Customer().getM_Phone()+ "')");
+			String query = ("INSERT OR IGNORE into Customer VALUES('" + DataManager.getInstance().getM_Customer().getM_ID() + "','" + DataManager.getInstance().getM_Customer().getM_Name() + "'," + DataManager.getInstance().getM_Customer().getM_Age() + "," 
+												+ DataManager.getInstance().getM_Customer().getM_DriveXP() + "," + "'"+(Rank.getRank(DataManager.getInstance().getM_Customer().getM_Age(), DataManager.getInstance().getM_Customer().getM_DriveXP())).toString()+"'" + ",'"
+												+ DataManager.getInstance().getM_Customer().getM_Phone()+ "')");
 
 			System.out.println(query);
-			statement.executeUpdate(query);
+			if(statement.executeUpdate(query)==0)
+			{
+				return new String("Returned customer");
+			}
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			return e1.getMessage();
 		}
-				// insert into invoice
-		String fromDate = sdf.format(DataManager.getInstance().getM_Reserv().getM_Start());
-		String toDate = sdf.format(DataManager.getInstance().getM_Reserv().getM_End());
+		return new String("New customer");
+	}
+
+	protected final String SaveInvoice() {
+		
+		Statement statement = createStatement();
+		ResultSet resultset = null;
+		
+		
+		Invoice invoice = DataManager.getInstance().getM_Invoice();
+	
+		String fromDate = DataManager.getInstance().getM_Reserv().getM_Start();
+		String toDate = DataManager.getInstance().getM_Reserv().getM_End();
+		
 		
 		try {
 			String query = ("INSERT INTO Invoice VALUES("+invoice.getM_InvoiceNum() + ",'" + invoice.getM_Customer().getM_ID() + "','" + invoice.getM_Ioffer().getM_Title() + "','"
@@ -651,13 +543,32 @@ public class ModelDesign
 		}
 		
 		try {
-			return resultset.getInt("max(Invoice.InvoiceNum)");
+			return resultset.getInt("max(Invoice.InvoiceNum)")+1;
 		} catch (SQLException e) {
 			
 			e.printStackTrace();
 			return 0;
 		}
 	}
+
+	protected void DeleteCustomer(String selectedCustomerID) {
+		Statement statement = createStatement();
+		String query = "DELETE FROM Customer where Customer.ID = '"+selectedCustomerID+"'";
+		
+		try {
+			statement.executeUpdate(query);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	protected Invoice GetFinalInvoice() {
+		return (DataManager.getInstance().getM_Invoice() == null) ? null : DataManager.getInstance().getM_Invoice();
+	}
+
+	
 
 
 }

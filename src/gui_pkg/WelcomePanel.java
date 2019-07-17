@@ -2,23 +2,20 @@ package gui_pkg;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
-public class WelcomePanel extends BasePanel// implements MouseListener 
+import gui_customized_comp.BaseLabel;
+import gui_customized_comp.BasePanel;
+import gui_customized_comp.BaseTextArea;
+import listeners_pkg.MyMouseListener;
+
+public class WelcomePanel extends BasePanel
 {
 	private JButton btnLogin;
 	private JButton btnCustomer;
 	private JButton btnLogout;
+	private JButton btnManage;
 	private BaseLabel Employeelbl;
 	private BaseTextArea txtWelcome;
 	private BaseTextArea txtMiniTitle;
@@ -74,6 +71,22 @@ public class WelcomePanel extends BasePanel// implements MouseListener
 		add(btnLogout);
 		
 		
+		btnManage = new JButton("Management");
+		btnManage.setVisible(false);
+		btnManage.setFocusPainted(false);
+		btnManage.setFocusable(false);
+		btnManage.setRequestFocusEnabled(false);
+		btnManage.setContentAreaFilled(false);
+		btnManage.setBorderPainted(true);
+		btnManage.setBackground(new Color(17, 41, 64));
+		btnManage.setBorder(new LineBorder(Color.WHITE, 2, true));
+		btnManage.setForeground(Color.WHITE);
+		btnManage.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		btnManage.setBounds(999, 405, 165, 50);
+		btnManage.addMouseListener(new MyMouseListener());
+		add(btnManage);
+		
+		
 		
 	
 		btnCustomer = new JButton("GET STARTED");
@@ -98,6 +111,11 @@ public class WelcomePanel extends BasePanel// implements MouseListener
 	}
 
 	
+	public final JButton getBtnManage() {
+		return btnManage;
+	}
+
+
 	public final BaseTextArea gettxtWelcome() {
 		return txtWelcome;
 	}

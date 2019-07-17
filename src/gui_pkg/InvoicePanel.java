@@ -4,6 +4,11 @@ import java.awt.Color;
 
 import javax.swing.ImageIcon;
 
+import gui_customized_comp.BaseLabel;
+import gui_customized_comp.BasePanel;
+import gui_customized_comp.BaseTextArea;
+import gui_customized_comp.BaseTextField;
+
 public class InvoicePanel extends BasePanel
 {
 	
@@ -21,7 +26,6 @@ public class InvoicePanel extends BasePanel
 	public InvoicePanel()
 	{
 		lblTitleReserv = new BaseLabel("Reservation Completed!");
-		//lblTitleReserv.setFont(new Font("Tahoma", Font.BOLD, 30));
 		lblTitleReserv.setBounds(393, 33, 368, 47);
 		lblTitleReserv.setForeground(new Color(60, 179, 113));
 		add(lblTitleReserv);
@@ -31,6 +35,7 @@ public class InvoicePanel extends BasePanel
 		add(ReservNum);
 		
 		txtReserv = new BaseTextField();
+		txtReserv.setEditable(false);
 		txtReserv.setBounds(383, 105, 116, 22);
 		add(txtReserv);
 		txtReserv.setColumns(10);
@@ -40,6 +45,7 @@ public class InvoicePanel extends BasePanel
 		add(CreditCard);
 		
 		txtCreditCard = new BaseTextField();
+		txtCreditCard.setEditable(false);
 		txtCreditCard.setColumns(10);
 		txtCreditCard.setBounds(383, 151, 116, 22);
 		add(txtCreditCard);
@@ -49,7 +55,7 @@ public class InvoicePanel extends BasePanel
 		add(CustomerDetails);
 		
 		txtVehicle = new BaseTextArea("Vehicle details:");
-		txtVehicle.setBounds(497, 197, 243, 196);
+		txtVehicle.setBounds(497, 197, 243, 302);
 		add(txtVehicle);
 		
 		txtInsurance = new BaseTextArea("Insurance details:");

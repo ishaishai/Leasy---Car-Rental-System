@@ -7,9 +7,9 @@ public enum Gear {
 		
 	}
 	
-	public static Gear getGear(String gear)
+	public static Gear getGear(int gear)
 	{
-		if(gear.contentEquals("AUTO"))
+		if(gear==1)
 		{
 			return AUTO;
 		}

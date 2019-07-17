@@ -5,18 +5,12 @@ import java.awt.EventQueue;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+
+import gui_usr_pkg.MainUserPanel;
+
 import javax.swing.ImageIcon;
 import java.awt.Color;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.util.ArrayList;
-
 import javax.swing.JTextPane;
-import java.awt.event.MouseAdapter;
-import javax.swing.JPanel;
-import java.awt.Toolkit;
-import javax.swing.JButton;
-import javax.swing.JLayeredPane;
 
 public class Main {
 
@@ -33,18 +27,7 @@ public class Main {
 	private static JTextPane txtpnHello;
 	private static WelcomePanel m_WelcomePanel;
 	private static MainUserPanel m_MainUser;
-	
-	public static final WelcomePanel getM_WelcomePanel() {
-		return m_WelcomePanel;
-	}
-
-	public static final void setM_WelcomePanel(WelcomePanel m_WelcomePanel) {
-		Main.m_WelcomePanel = m_WelcomePanel;
-	}
-
 	private static DirPanel m_DirPanel;
-	private JLabel lblNewLabel;
-
 	
 	/**
 	 * Launch the application.
@@ -91,17 +74,7 @@ public class Main {
 		m_Mainframe.getContentPane().add(m_TitlePanel);
 		m_TitlePanel.setLayout(null);
 		
-		JLabel label = new JLabel("");
-		label.setBounds(99, 0, 110, 81);
-		m_TitlePanel.add(label);
-		label.setIcon(new ImageIcon("Resources\\Imgs\\Leasy.png"));
 		
-		lblNewLabel = new JLabel("Leasing is easy!");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setForeground(Color.WHITE);
-		lblNewLabel.setFont(new Font("Rockwell", Font.BOLD, 36));
-		lblNewLabel.setBounds(221, 0, 358, 81);
-		m_TitlePanel.add(lblNewLabel);
 		
 		m_Mainframe.getContentPane().add(m_Mainpanel);
 		m_Mainpanel.setLayout(null);
@@ -117,22 +90,8 @@ public class Main {
 		m_MainUser = new MainUserPanel();
 		m_InvoicePanel = new InvoicePanel();
 		
-
-		//m_Mainpanel.add(m_MainUser);
-	
-		
-		
-		
 		m_Mainpanel.add(m_WelcomePanel);
-		//m_Mainpanel.add(m_ReviewOrder);
-		//m_Mainpanel.add(m_FirstScreen);
-		//m_Mainpanel.add(m_PaymentPanel);
-		//m_Mainpanel.add(m_selectCarPanel);
-		//m_Mainpanel.add(m_InvoicePanel);
-		//m_Mainpanel.add(m_UserPanel);
-		//m_Mainpanel.add(m_FullCustomerDetailsPanel);
-		//m_Mainpanel.add(m_FirstScreen);
-		//m_Mainpanel.add(m_InsurancePanel);
+		
 		m_Mainframe.getContentPane().add(m_DirPanel);
 		m_DirPanel.setLayout(null);
 		
@@ -146,12 +105,16 @@ public class Main {
 		txtpnHello.setEditable(false);
 		txtpnHello.setOpaque(false);
 		m_Mainframe.getContentPane().add(txtpnHello);
-		
-
-		//DirPanel.getM_Controller().SetHomePage();
 	}	
 	
-	
+
+	public static final WelcomePanel getM_WelcomePanel() {
+		return m_WelcomePanel;
+	}
+
+	public static final void setM_WelcomePanel(WelcomePanel m_WelcomePanel) {
+		Main.m_WelcomePanel = m_WelcomePanel;
+	}
 	
 	public static final DirPanel getM_DirPanel() {
 		return m_DirPanel;
@@ -209,11 +172,6 @@ public class Main {
 	public static final MainUserPanel getM_MainUser() {
 		return m_MainUser;
 	}
-
-	public final JLabel getLblNewLabel() {
-		return lblNewLabel;
-	}
-	
 	
 }
 

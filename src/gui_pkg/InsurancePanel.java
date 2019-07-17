@@ -1,16 +1,9 @@
 package gui_pkg;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.border.LineBorder;
+import gui_customized_comp.BaseLabel;
+import gui_customized_comp.BasePanel;
+import gui_customized_comp.BaseTextArea;
+import listeners_pkg.InsuranceListener;
 
 public class InsurancePanel extends BasePanel
 {
@@ -29,16 +22,19 @@ public class InsurancePanel extends BasePanel
 		
 		txtInsuranceA = new BaseTextArea();
 		txtInsuranceA.setLocation(158, 99);
+		txtInsuranceA.setSize(255, 250);
 		txtInsuranceA.addMouseListener(new InsuranceListener());
 		add(txtInsuranceA);
 		
 		txtInsuranceB = new BaseTextArea();
 		txtInsuranceB.setLocation(451,99);
+		txtInsuranceB.setSize(255, 250);
 		txtInsuranceB.addMouseListener(new InsuranceListener());
 		add(txtInsuranceB);
 		
 		txtInsuranceC = new BaseTextArea();
 		txtInsuranceC.setLocation(746,99);
+		txtInsuranceC.setSize(255, 250);
 		txtInsuranceC.addMouseListener(new InsuranceListener());
 		add(txtInsuranceC);
 	}

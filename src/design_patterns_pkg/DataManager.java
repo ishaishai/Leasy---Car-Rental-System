@@ -2,11 +2,16 @@ package design_patterns_pkg;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import person_pkg.*;
 import reserv_pkg.*;
 import vehicle_pkg.*;
+
+/*
+ * The DataManager class implemented as our singleton design pattern
+ */
 
 public class DataManager 
 {
@@ -18,11 +23,8 @@ public class DataManager
 	private Insurance m_SelectedInsurance;
 	private Employee m_Employee;
 	private Customer m_Customer;
-	private List<Vehicle> m_Vehicles;
+	private HashMap<String,Vehicle> m_Vehicles;
 	private Vehicle m_SelectedVehicle;
-	
-
-	//private ResultSet m_ResultSet;
 	private SqlLink m_SqlLink;
 	
 	private DataManager() throws ClassNotFoundException
@@ -33,7 +35,7 @@ public class DataManager
 		m_SelectedInsurance = new Insurance();
 		m_Employee = null;
 		m_Customer = new Customer();
-		m_Vehicles = new ArrayList<>();
+		m_Vehicles = new HashMap<String,Vehicle>();
 		m_SqlLink = new SqlLink();
 		m_SelectedVehicle = null;
 	}
@@ -111,11 +113,11 @@ public class DataManager
 		this.m_Customer = m_Customer;
 	}
 
-	public final List<Vehicle> getM_Vehicles() {
+	public final HashMap<String,Vehicle> getM_Vehicles() {
 		return m_Vehicles;
 	}
 
-	public final void setM_Vehicles(List<Vehicle> m_Vehicles) {
+	public final void setM_Vehicles(HashMap<String,Vehicle>  m_Vehicles) {
 		this.m_Vehicles = m_Vehicles;
 	}
 
@@ -140,42 +142,3 @@ public class DataManager
 	
 }
 
-class SqlLink{
-	private Connection m_Connection;
-	
-	public final Connection getM_Connection() {
-		return m_Connection;
-	}
-
-	public SqlLink()
-	{
-		try
-		{
-			Class.forName("org.sqlite.JDBC");
-		}
-		catch(ClassNotFoundException exception)
-		{
-			System.out.println(exception.getMessage());
-		}
-		
-	    m_Connection = null;
-	    try
-	    {
-	       // create a database connection
-	       m_Connection = DriverManager.getConnection("jdbc:sqlite:DB/CarRentalDatabase.db");
-	    }
-	    catch(SQLException e){  System.err.println(e.getMessage()); }     
-	}
-	public void CloseLink()
-	{
-		 try {
-             if(m_Connection != null)
-                m_Connection.close();
-             }
-       catch(SQLException e) {          
-          System.err.println(e); 
-        }
-	}
-	
-	
-}

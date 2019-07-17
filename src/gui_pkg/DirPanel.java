@@ -2,20 +2,13 @@ package gui_pkg;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.Timer;
-
 import design_patterns_pkg.ControllerDesign;
 import design_patterns_pkg.ModelDesign;
 import design_patterns_pkg.ViewDesign;
+import listeners_pkg.MyIconBtnListener;
 
 public class DirPanel extends JPanel {
 	private JButton NextButton;
@@ -47,11 +40,11 @@ public class DirPanel extends JPanel {
 		NextButton.setText("");
 		NextButton.setBounds(539, 11, 90, 68);
 		NextButton.setVisible(false);
-		NextButton.setIcon(new ImageIcon("C:\\Users\\ishai\\eclipse-workspace\\Car Rental System\\Resources\\Imgs\\forward.png"));
+		NextButton.setIcon(new ImageIcon("Resources\\Imgs\\forward.png"));
 		add(NextButton);
 		
 		btnHome = new JButton();
-		btnHome.setIcon(new ImageIcon("C:\\Users\\ishai\\eclipse-workspace\\Car Rental System\\Resources\\Imgs\\home.png"));
+		btnHome.setIcon(new ImageIcon("Resources\\Imgs\\home.png"));
 		btnHome.setBounds(305, 6, 90, 70);
 		btnHome.setContentAreaFilled(false);
 		btnHome.setFocusPainted(false);
@@ -70,7 +63,7 @@ public class DirPanel extends JPanel {
 		BackButton.setContentAreaFilled(false);
 		BackButton.setText("");
 		BackButton.setBounds(546, 11, 90, 68);
-		BackButton.setIcon(new ImageIcon("C:\\Users\\ishai\\eclipse-workspace\\Car Rental System\\Resources\\Imgs\\back.png"));
+		BackButton.setIcon(new ImageIcon("Resources\\Imgs\\back.png"));
 		BackButton.setFont(new Font("Tahoma", Font.BOLD, 32));
 		BackButton.setBounds(73, 11, 90, 68);
 		BackButton.addMouseListener(new MyIconBtnListener());

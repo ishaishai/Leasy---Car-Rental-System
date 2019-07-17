@@ -1,30 +1,25 @@
 package gui_pkg;
 
-import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.Date;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import com.toedter.calendar.JDateChooser;
+
+import gui_customized_comp.BaseLabel;
+import gui_customized_comp.BasePanel;
+import gui_customized_comp.BaseTextField;
+
 import javax.swing.ImageIcon;
+import gui_customized_comp.BaseTextPane;
 
 public class FirstDetailsPanel extends BasePanel {
 	private BaseTextField txtAge;
 	private BaseTextField txtDriveXP;
 	private JDateChooser datePickUp;
 	private JDateChooser dateReturn;
-	
+	private BaseTextPane txtpnMinimumHours;
+	private BaseTextPane txtpnAgeNXP;
 	public FirstDetailsPanel()
 	{		
 		BaseLabel lblNewLabel = new BaseLabel("Pick up date:");
@@ -44,31 +39,53 @@ public class FirstDetailsPanel extends BasePanel {
 		add(lblDrivingYears);
 		
 		datePickUp = new JDateChooser();
+		datePickUp.setFont(new Font("Tahoma", Font.BOLD, 12));
 		datePickUp.setMinSelectableDate(new Date()); 
-		datePickUp.setBounds(444, 122, 91, 20);
+		datePickUp.setBounds(444, 122, 132, 20);
 		add(datePickUp);
 		
 		dateReturn = new JDateChooser();
+		dateReturn.setFont(new Font("Tahoma", Font.BOLD, 12));
 		dateReturn.setMinSelectableDate(new Date()); 
-		dateReturn.setBounds(444, 166, 91, 20);
+		dateReturn.setBounds(444, 166, 132, 20);
 		add(dateReturn);
 		
 		txtAge = new BaseTextField();
+		txtAge.setSize(41, 20);
 		txtAge.setLocation(444, 220);
 		add(txtAge);
 		txtAge.setColumns(10);
 		
 		txtDriveXP = new BaseTextField();
+		txtDriveXP.setSize(41, 20);
 		txtDriveXP.setLocation(444, 271);
 		add(txtDriveXP);
 		txtDriveXP.setColumns(10);
 		
 		JLabel label = new JLabel("");
 		label.setIcon(new ImageIcon("Resources\\Imgs\\timeline.png"));
-		label.setBounds(634, 148, 110, 113);
+		label.setBounds(940, 122, 110, 113);
 		add(label);
+		
+		txtpnMinimumHours = new BaseTextPane("* Minimum 24 hours rent & pickup before return date");
+		txtpnAgeNXP = new BaseTextPane("* Please fill the fields with digits only");
+		txtpnAgeNXP.setBounds(622,238,261,29);
+		txtpnMinimumHours.setBounds(622, 138, 261, 40);
+		add(txtpnAgeNXP);
+		add(txtpnMinimumHours);
 	}
 	
+	
+	public final BaseTextPane getTxtpnMinimumHours() {
+		return txtpnMinimumHours;
+	}
+
+
+	public final BaseTextPane getTxtpnAgeNXP() {
+		return txtpnAgeNXP;
+	}
+
+
 	public final BaseTextField getTxtAge() {
 		return txtAge;
 	}

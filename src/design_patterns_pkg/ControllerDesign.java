@@ -8,7 +8,7 @@ import javax.swing.Timer;
 
 import gui_pkg.Main;
 import gui_pkg.MainPanel;
-import gui_pkg.MainUserPanel;
+import gui_usr_pkg.MainUserPanel;
 import person_pkg.Customer;
 import reserv_pkg.Insurance;
 import reserv_pkg.Reservation;
@@ -20,6 +20,7 @@ public class ControllerDesign
 	private ViewDesign m_View;
 	private Timer t;
 	
+	
 	public ControllerDesign(ModelDesign model,ViewDesign view)
 	{
 		t = null;
@@ -27,154 +28,13 @@ public class ControllerDesign
 		m_View = view;
 	}
 	
+
+	///////////////////////////////////////////////////////////////////////////////////////
+	///																				    ///
+	///			Navigating methods between screens using Next and Back buttons		    ///	
+	///																					///
+	///////////////////////////////////////////////////////////////////////////////////////
 	
-	public boolean FirstDetailsCheck()
-	{
-		if(m_View.getFirstDetails()==false)
-			return false;
-		m_Model.SetFirstDetails(new Reservation(m_View.getM_Start(),m_View.getM_End(),m_View.getM_Age(),m_View.getM_DriveXP()));
-		
-		System.out.println(DataManager.getInstance().getM_Reserv().toString());
-		
-		m_View.setSelectCarRanks(m_Model.RankFilter());		
-		return true;
-	}
-	
-	public void LoadVehicles()
-	{
-		m_Model.getRelevantVehicles(((DefaultComboBoxModel<String>) Main.getM_selectCarPanel().getRankComboBox().getModel()).getSelectedItem().toString());
-		m_View.setRelevantVehicles();
-	}
-	
-
-
-
-	public void SetVehicleDetails()
-	{
-		m_Model.FindSelectedCarDetails(m_View.GetSelectedVehicle());
-		m_View.setSelectedCarDetails();
-	}
-	
-	public boolean ReviewLogin()
-	{
-		if(this.checkUserLogin())
-		{
-			m_View.ChangeUserStatus(true);
-		}
-		else
-		{
-			m_View.ChangeUserStatus(false);
-		}
-		
-		
-		return false;
-	}
-	
-	public boolean CheckIfChooseCar()
-	{
-		if(DataManager.getInstance().getM_SelectedVehicle() == null)
-		{
-			m_View.MessageBox("Need to pick vehicle first");
-			return false;
-		}
-		return true;
-	}
-	
-
-
-	public boolean CheckChosenInsurance() 
-	{
-		char Selected = m_View.GetSelectedInsurance();
-		if(Selected == Character.MIN_VALUE)
-		{
-			return false;
-		}
-		m_Model.SetSelectedInsurance(Selected);
-		return true;
-	}
-
-	public boolean CheckFullDetails() 
-	{
-		Customer c = m_View.GetFullDetails();
-		if(c==null)
-			return false;
-		m_Model.SetFullDetails(c);
-		m_Model.setFinalPrice();
-		return true;
-	}
-
-
-	private void HandleFinalReview() {
-		Vehicle vehicle = m_Model.getSelectedVehicle();
-		Insurance insurance = m_Model.getSelectedInsurance();
-		Reservation reserv = m_Model.getReserv();
-		Customer customer = m_Model.getCustomer();
-		String price = String.format("%d", m_Model.getFinalPrice());
-		//String username = m_Model.getLoggedEmployee();
-		
-		m_View.SetFinalReviewDetails(vehicle,insurance,reserv,customer,price);		
-	}
-
-
-	
-
-
-	public boolean ReviewForward() {
-		
-		return true;
-	}
-
-
-	public boolean PaymentHandle() {
-		return m_View.PaymentSimulate();
-		
-	}
-
-
-	private boolean checkUserLogin() {
-		if(m_Model.SetLoggedEmployee(m_View.GetUserInfo()))
-		{
-			m_View.SetLoginInfo(m_Model.getLoggedEmployee());
-			return true;
-		}
-		else
-		{
-			m_View.MessageBox("Wrong user\\password");
-		}
-		
-		return false;
-	}
-	
-	public void mainLogin(boolean b)
-	{
-		if(b)
-		{
-			if(checkUserLogin())
-			{
-				m_View.ChangeUserStatus(true);
-				setUserHome();
-			}
-		}
-		else
-		{
-			m_Model.SetLoggedEmployee(null);
-			m_View.SetLoginInfo(null);			
-		}
-	}
-	
-	public void setUserHome()
-	{
-		m_View.ChangeScreen(Main.getM_MainUser());
-	}
-	
-
-
-	public void SetDiscount() {
-		m_View.UpdateReservDiscount(m_Model.SetReservDiscount(m_View.GetDiscountFromUser()));
-		
-	}
-
-
 	public void MoveForward() {
 		switch(MainPanel.m_Status)
 		{
@@ -187,7 +47,7 @@ public class ControllerDesign
 		}
 		case 1:
 		{
-			if(FirstDetailsCheck()==false)
+			if(!FirstDetailsCheck())
 			{
 				return;
 			}
@@ -197,15 +57,15 @@ public class ControllerDesign
 		}
 		case 2:
 		{
-			if(!(CheckIfChooseCar()))
+			if(!(CheckIfChoseCar(m_Model.getSelectedVehicle())))
 			{
+				m_View.MessageBox("Need to pick vehicle first");
 				return;
 			}
 			
 			m_View.ChangeScreen(Main.getM_InsurancePanel());
 			m_View.ClearDetails(Main.getM_InsurancePanel().getComponents());
-			m_Model.PullInsurances();
-			m_View.SetInsurances();
+			m_View.SetInsurances(m_Model.PullInsurances());
 			break;
 		}
 		case 3:
@@ -231,12 +91,7 @@ public class ControllerDesign
 			break;
 		}
 		case 5:
-		{
-			if(!(ReviewForward()))
-			{
-				return;
-			}
-			
+		{			
 			m_View.ChangeScreen(Main.getM_PaymentPanel());
 			m_View.ClearDetails(Main.getM_PaymentPanel().getComponents());
 			m_View.SetPaymentBoxes();
@@ -253,10 +108,10 @@ public class ControllerDesign
 					
 						if(PaymentHandle())
 						{
-								
-							// need to save 4 last digits of credit card and some other details
-							m_View.MessageBox((m_Model.SetFinalInvoice(m_View.GetCreditCard())));
+							m_Model.SetFinalInvoice(m_View.GetCreditCard());
+							m_View.MessageBox((m_Model.SaveInvoice()));
 							m_View.ChangeScreen(Main.getM_InvoicePanel());
+							m_View.SetFinalInvoice(m_Model.GetFinalInvoice());
 							m_View.SetDirBackButton(false);
 							m_View.SetDirNextButton(false);
 							stopTimer(t);
@@ -269,11 +124,9 @@ public class ControllerDesign
 					
 				});	
 				t.start();
-		
 				break;
 			}
 			else {
-				m_View.MessageBox("Please check your card info");
 				return;
 			}
 		}
@@ -320,6 +173,187 @@ public class ControllerDesign
 		
 	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////
+	///																				    ///
+	///						End of navigating methods								    ///	
+	///																					///
+	///////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	/*
+	 * FirstDetailsCheck method for test errors in first reservation details 
+	 * and set those details in the model.
+	 * if everything goes well the next screen will get the customer available vehicle ranks
+	 */
+	
+	public boolean FirstDetailsCheck()
+	{
+		Reservation reserv;
+		if((reserv=m_View.getFirstDetails())==null)
+			return false;
+		m_Model.SetFirstDetails(reserv);
+		m_View.setSelectCarRanks(m_Model.RankFilter());		
+		return true;
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////
+	
+	///////////////////////////////////////////////////////////////////////////////////////
+	///																				    ///
+	///			Following methods are vehicle choose screen managing events 		    ///	
+	///																					///
+	///////////////////////////////////////////////////////////////////////////////////////
+	
+	/*
+	 * LoadVehicles method used for setting the relevant vehicles related to the customer chosen vehicle rank
+	 * and set 
+	 */
+	public void LoadVehicles()
+	{
+		m_View.setRelevantVehicles(m_Model.getRelevantVehicles(m_View.getSelectedRank()));
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////
+
+	
+	/*
+	 * SetVehicleDetails method is used for setting the TextArea after selecting a vehicle from list
+	 */
+	public void SetVehicleDetails()
+	{
+		m_View.setSelectedCarDetails(m_Model.FindSelectedCarDetails(m_View.GetSelectedVehicle()));
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/*
+	 * CheckIfChoseCar method used when trying to go to next screen (if not chosen gets msg)
+	 */
+	public boolean CheckIfChoseCar(Vehicle vehicle)
+	{
+		return (vehicle!=null) ? true : false;
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	///////////////////////////////////////////////////////////////////////////////////////
+	///																				    ///
+	///						End of managing vehicle choose event methods			    ///	
+	///																					///
+	///////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	/*
+	 * CheckChosenInsurance method is used to check and set the chosen insurance deal
+	 */
+	public boolean CheckChosenInsurance() 
+	{
+		char Selected = m_View.GetSelectedInsurance();
+		if(Selected == Character.MIN_VALUE)
+		{
+			return false;
+		}
+		m_Model.SetSelectedInsurance(Selected);
+		return true;
+	}
+	///////////////////////////////////////////////////////////////////////////////////
+	
+
+	/*
+	 * CheckFullDetails method is used to check whether all customer details are valid
+	 * in fullcustomerdetails panel and process customer details - if customer is new or 
+	 * already exists it will pop up a message about it
+	 */
+	public boolean CheckFullDetails() 
+	{
+		Customer c = m_View.GetFullDetails();
+		String msg;
+		if(c==null)
+			return false;
+		m_Model.setFinalPrice();
+		msg = m_Model.SetFullDetails(c);
+		m_View.MessageBox(msg);
+		if(!(msg.contentEquals("Returned customer")) && !(msg.contentEquals("New customer")))
+		{
+			return false;
+		}
+		return true;		
+	}
+	////////////////////////////////////////////////////////////////////////////////////////
+
+
+	
+	public boolean ReviewLogin()
+	{
+		if(checkUserLogin())
+		{
+			m_View.ChangeUserStatus(true);
+		}
+		else
+		{
+			m_View.ChangeUserStatus(false);
+		}
+		
+		
+		return false;
+	}
+
+	private boolean checkUserLogin() {
+		if(m_Model.SetLoggedEmployee(m_View.GetUserInfo()))
+		{
+			m_View.SetLoginInfo(m_Model.getLoggedEmployee());
+			return true;
+		}
+		else
+		{
+			m_View.MessageBox("Wrong user\\password");
+		}
+		
+		return false;
+	}
+	
+
+	public void mainLogin(boolean b)
+	{
+		if(b)
+		{
+			if(checkUserLogin())
+			{
+				m_View.ChangeUserStatus(true);
+			}
+		}
+		else
+		{
+			m_Model.SetLoggedEmployee(null);
+			m_View.SetLoginInfo(null);			
+		}
+	}
+	
+	private void HandleFinalReview() {
+		Vehicle vehicle = m_Model.getSelectedVehicle();
+		Insurance insurance = m_Model.getSelectedInsurance();
+		Reservation reserv = m_Model.getReserv();
+		Customer customer = m_Model.getCustomer();
+		String price = String.format("%d", m_Model.getFinalPrice());		
+		m_View.SetFinalReviewDetails(vehicle,insurance,reserv,customer,price);		
+	}
+
+	public boolean PaymentHandle() {
+		return m_View.PaymentSimulate();
+		
+	}
+
+
+	
+	public void setUserHome()
+	{
+		m_View.ChangeScreen(Main.getM_MainUser());
+		m_View.ChangeUserScreen(MainUserPanel.getM_MenuMain());
+	}
+	
+
+
+	public void SetDiscount() {
+		m_View.UpdateReservDiscount(m_Model.SetReservDiscount(m_View.GetDiscountFromUser()));
+		
+	}
+
 	private boolean getCardInfo() {
 		return m_View.CardCheck();
 	}
@@ -346,5 +380,32 @@ public class ControllerDesign
 		m_View.SetManageStock(m_Model.GetCompanyStock());
 		m_View.ChangeUserScreen(MainUserPanel.getM_UserStockPanel());
 	}
+	
+	public void LoadCustomers() {
+		m_View.SetManageCustomers(m_Model.GetCompanyCustomers());
+		m_View.ChangeUserScreen(MainUserPanel.getM_UserCustomersPanel());
+		
+	}
 
+
+
+	public final ModelDesign getM_Model() {
+		return m_Model;
+	}
+
+
+	public final ViewDesign getM_View() {
+		return m_View;
+	}
+
+
+	public void RemoveCustomer() {
+		m_Model.DeleteCustomer(m_View.getSelectedCustomer());
+	}
+
+
+	public void EditCreditCard() {
+		m_View.creditSwitch();		
+	}
+	
 }
