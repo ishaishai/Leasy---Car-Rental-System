@@ -441,7 +441,7 @@ public class ViewDesign {
 		{
 		    txtUsername = username.getText();
 		    txtPassword = String.valueOf(password.getPassword());
-		    if(txtUsername.equals("") || txtPassword.equals(""))
+		    if(!RegexChecker.checkOnlyLetters(txtUsername) || !RegexChecker.checkOnlyNumbers(txtPassword))
 		    {
 		    	return null;
 		    }

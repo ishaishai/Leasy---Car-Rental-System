@@ -270,12 +270,13 @@ public class ModelDesign
 		Statement statement = null;
 		ResultSet resultset = null;
 		
-		statement = createStatement();
+		
 		if(employee == null)
 		{
 			DataManager.getInstance().setM_Employee(null);
 			return false;
 		}
+		statement = createStatement();
 		try {
 			resultset = statement.executeQuery("select * from Employee where Username = '"+employee.getM_Username()+"'" + " and Password='"+employee.getM_Password()+"'");
 		} catch (SQLException e) {
