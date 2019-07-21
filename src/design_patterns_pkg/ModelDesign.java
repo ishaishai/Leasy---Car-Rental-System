@@ -319,6 +319,7 @@ public class ModelDesign
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
 		finally
 		{
 			try {	
@@ -338,6 +339,10 @@ public class ModelDesign
 		Statement statement = null;
 		try {
 			statement = DataManager.getInstance().getM_SqlLink().getM_Connection().createStatement();
+			//statement = DataManager.getInstance().getM_SqlLink().getM_Connection().prepareStatement(null,  ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.TYPE_SCROLL_SENSITIVE);
+			/*DataManager.getInstance().getM_SqlLink().getM_Connection().prepareStatement("select typeid from users where username=? and password=?",
+			        ResultSet.TYPE_SCROLL_SENSITIVE, 
+			    ResultSet.CONCUR_UPDATABLE);*/
 			statement.setQueryTimeout(30);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -393,6 +398,11 @@ public class ModelDesign
 		return getRelevantDefaultTableModel("select * from Customer");
 	}
 	
+
+	public DefaultTableModel GetCustomerHistory() {
+		return getRelevantDefaultTableModel("SELECT Model,Plate,FromDate,ToDate,TOtalPrice,CreditNum FROM Invoice inner join Vehicle on Invoice.LicensePlate = Vehicle.Plate where Invoice.CustomerID = '"+DataManager.getInstance().getM_Customer().getM_ID()+"'");
+	}
+
 	private DefaultTableModel getRelevantDefaultTableModel(String query)
 	{
 		Statement statement = createStatement();
@@ -402,13 +412,20 @@ public class ModelDesign
 		try {
 			resultset = statement.executeQuery(query);
 			ResultSetMetaData metaData = resultset.getMetaData();
-			
 			for(int i=1;i<=metaData.getColumnCount();i++)
 			{
 				columnNames.add(metaData.getColumnName(i));
 			}
 			
+			
+			
 			Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+			int count;
+			if(metaData.getColumnName(1).equalsIgnoreCase("count") && (count=resultset.getInt("count"))==0)
+			{
+				return null;
+			}
+			
 			while (resultset.next()) {
 			    Vector<Object> vector = new Vector<Object>();
 			    for (int columnIndex = 1; columnIndex <= metaData.getColumnCount(); columnIndex++) {
@@ -567,6 +584,44 @@ public class ModelDesign
 
 	protected Invoice GetFinalInvoice() {
 		return (DataManager.getInstance().getM_Invoice() == null) ? null : DataManager.getInstance().getM_Invoice();
+	}
+
+	public Customer findCustomer(String customer) {
+		if(customer == null)
+			return null;
+		
+		Statement statement = createStatement();
+		ResultSet resultset = null;
+		String query = "SELECT * FROM Customer where Customer.ID = '"+customer+"' OR Customer.Phone='"+customer+"'";
+		
+		try {
+			resultset = statement.executeQuery(query);
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		Customer c = null;
+		try {
+			while (resultset.next()) {
+			c = new Customer(
+					resultset.getString("ID"),
+					resultset.getString("Name"),
+					resultset.getInt("Age"),
+					resultset.getInt("DriveXP"),
+					Rank.valueOf(resultset.getString("Rank")),
+					resultset.getString("Phone")
+					);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 DataManager.getInstance().setM_Customer(c);
+		
+		
+		return c;
+		
 	}
 
 	

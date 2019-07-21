@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -593,6 +594,7 @@ public class ViewDesign {
 		    else if((JComponent)control instanceof BaseTextArea)
 		    {
 		    	BaseTextArea ctrl = (BaseTextArea) control;
+	
 		        ctrl.setText("");
 		    }
 		    
@@ -618,6 +620,15 @@ public class ViewDesign {
 		    	BaseTextPane ctrl = (BaseTextPane) control;
 		    	ctrl.setVisible(false);
 		    }
+		    else if((JComponent)control instanceof JScrollPane)
+		    {
+		    	JScrollPane ctrl = (JScrollPane) control;
+		    	if(ctrl == MainUserPanel.getM_SearchedCustomerPanel().getScrollInvoices())
+		    	{
+		    		ctrl.setVisible(false);
+		    	}
+		    }
+		    
 		    
 		}
 		
@@ -700,7 +711,7 @@ public class ViewDesign {
 		return selectedCustomer;
 	}
 
-	public void SetFinalInvoice(Invoice invoice) {
+	protected void SetFinalInvoice(Invoice invoice) {
 		InvoicePanel panel = Main.getM_InvoicePanel();
 		
 		panel.getTxtReserv().setText(Integer.toString(invoice.getM_InvoiceNum()));
@@ -711,8 +722,40 @@ public class ViewDesign {
 		panel.getTxtPrice().setText(Integer.toString(invoice.getM_TotalPrice()));
 	}
 
-	public String getSelectedRank() {
+	protected String getSelectedRank() {
 		return ((DefaultComboBoxModel<String>) Main.getM_selectCarPanel().getRankComboBox().getModel()).getSelectedItem().toString();
+	}
+
+	protected String getCustomerSearchDetail() {
+		return (RegexChecker.checkOnlyNumbers(MainUserPanel.getM_UserSearchCustomerPanel().getTxtSearchInput().getText()) || 
+				RegexChecker.checkPhoneNumber(MainUserPanel.getM_UserSearchCustomerPanel().getTxtSearchInput().getText())) ?
+						(MainUserPanel.getM_UserSearchCustomerPanel().getTxtSearchInput().getText()) : 
+							null;
+		
+	}
+
+	protected boolean setSearchedCustomerDetails(Customer customer) {
+		if(customer == null)
+			return false;
+		
+		MainUserPanel.getM_SearchedCustomerPanel().getbslblCustomerName().setText(customer.getM_Name());
+		MainUserPanel.getM_SearchedCustomerPanel().getTxtCustomerDetails().setText(customer.toString());
+		
+		return true;
+		
+	}
+
+	protected void SetCustomerHistory(DefaultTableModel customerHistory) {
+		if(customerHistory.getRowCount() > 0) {
+			MainUserPanel.getM_SearchedCustomerPanel().getScrollInvoices().setVisible(true);
+			MainUserPanel.getM_SearchedCustomerPanel().getTableInvoices().setModel(customerHistory);
+			FixTableCols(MainUserPanel.getM_SearchedCustomerPanel().getTableInvoices());
+		
+		}
+		else
+		{
+			MessageBox("No further history to show");
+		}
 	}
 
 	

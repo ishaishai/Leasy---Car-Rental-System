@@ -370,18 +370,18 @@ public class ControllerDesign
 	}
 
 
-	public void LoadInvoices() {
+	public void LoadUserInvoicesPanel() {
 		m_View.SetManageInvoices(m_Model.GetInvoices());
 		m_View.ChangeUserScreen(MainUserPanel.getM_UserInvoices());
 	}
 
 
-	public void LoadStock() {
+	public void LoadUserStockPanel() {
 		m_View.SetManageStock(m_Model.GetCompanyStock());
 		m_View.ChangeUserScreen(MainUserPanel.getM_UserStockPanel());
 	}
 	
-	public void LoadCustomers() {
+	public void LoadUserCustomersPanel() {
 		m_View.SetManageCustomers(m_Model.GetCompanyCustomers());
 		m_View.ChangeUserScreen(MainUserPanel.getM_UserCustomersPanel());
 		
@@ -406,6 +406,29 @@ public class ControllerDesign
 
 	public void EditCreditCard() {
 		m_View.creditSwitch();		
+	}
+
+
+	public void LoadUserSearchCustomerPanel() {
+		m_View.ClearDetails(MainUserPanel.getM_UserSearchCustomerPanel().getComponents());
+		m_View.ClearDetails(MainUserPanel.getM_SearchedCustomerPanel().getComponents());
+	
+		m_View.ChangeUserScreen(MainUserPanel.getM_UserSearchCustomerPanel());	
+	}
+
+
+	public void SearchCustomer() {
+		m_View.ClearDetails(MainUserPanel.getM_SearchedCustomerPanel().getComponents());
+		if(!m_View.setSearchedCustomerDetails(m_Model.findCustomer(m_View.getCustomerSearchDetail())))	
+			m_View.MessageBox("Cannot find customer");
+		else
+			m_View.ChangeUserScreen(MainUserPanel.getM_SearchedCustomerPanel());
+	}
+
+
+	public void ShowCustomerHistory() {
+		m_View.SetCustomerHistory(m_Model.GetCustomerHistory());
+		
 	}
 	
 }

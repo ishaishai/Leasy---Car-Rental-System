@@ -28,4 +28,6 @@ public enum Rank {
 	{
 		return (rank==A) ? "A" : (rank==B) ? "B" : (rank==C) ? "C" : "D";
 	}
+	
+	
 }

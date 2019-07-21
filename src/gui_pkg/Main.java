@@ -2,13 +2,9 @@ package gui_pkg;
 
 import java.awt.EventQueue;
 
-import javax.swing.JLabel;
 import java.awt.Font;
-import javax.swing.SwingConstants;
-
 import gui_usr_pkg.MainUserPanel;
 
-import javax.swing.ImageIcon;
 import java.awt.Color;
 import javax.swing.JTextPane;
 

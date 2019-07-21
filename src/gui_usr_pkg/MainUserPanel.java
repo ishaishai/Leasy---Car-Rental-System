@@ -14,7 +14,8 @@ public class MainUserPanel extends BasePanel
 	private static UserStockPanel m_UserStockPanel;
 	private static UserCustomersPanel m_UserCustomersPanel;
 	private static JLayeredPane m_layeredPaneTop;
-	
+	private static UserSearchCustomerPanel m_UserSearchCustomerPanel;
+	private static SearchedCustomerPanel m_SearchedCustomerPanel;
 	public MainUserPanel()
 	{
 		m_SideMenu = new UserSideMenu();
@@ -22,6 +23,8 @@ public class MainUserPanel extends BasePanel
 		m_UserInvoices = new UserInvoicesPanel();
 		m_UserStockPanel = new UserStockPanel();
 		m_UserCustomersPanel = new UserCustomersPanel();
+		m_UserSearchCustomerPanel = new UserSearchCustomerPanel();
+		m_SearchedCustomerPanel = new SearchedCustomerPanel();
 		m_UserInvoices.setLayout(null);
 
 		m_layeredPaneTop = new JLayeredPane();
@@ -72,6 +75,11 @@ public class MainUserPanel extends BasePanel
 	}
 
 
+	public static SearchedCustomerPanel getM_SearchedCustomerPanel() {
+		return m_SearchedCustomerPanel;
+	}
+
+
 	public static final void setM_layeredPaneTop(JLayeredPane m_layeredPaneTop) {
 		MainUserPanel.m_layeredPaneTop = m_layeredPaneTop;
 	}
@@ -84,6 +92,11 @@ public class MainUserPanel extends BasePanel
 
 	public static final UserCustomersPanel getM_UserCustomersPanel() {
 		return m_UserCustomersPanel;
+	}
+
+
+	public static UserSearchCustomerPanel getM_UserSearchCustomerPanel() {
+		return m_UserSearchCustomerPanel;
 	}
 
 

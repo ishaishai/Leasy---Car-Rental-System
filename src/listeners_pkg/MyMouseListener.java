@@ -41,15 +41,27 @@ public class MyMouseListener implements MouseListener {
 		}
 		else if(event.getSource() == UserSideMenu.getBtnViewInvoices())
 		{
-			DirPanel.getM_Controller().LoadInvoices();
+			DirPanel.getM_Controller().LoadUserInvoicesPanel();
 		}
 		else if(event.getSource() == UserSideMenu.getBtnViewVehicles())
 		{
-			DirPanel.getM_Controller().LoadStock();
+			DirPanel.getM_Controller().LoadUserStockPanel();
 		}
 		else if(event.getSource() == UserSideMenu.getbtnViewCustomers())
 		{
-			DirPanel.getM_Controller().LoadCustomers();
+			DirPanel.getM_Controller().LoadUserCustomersPanel();
+		}
+		else if(event.getSource() == UserSideMenu.getBtnSearchCustomer())
+		{
+			DirPanel.getM_Controller().LoadUserSearchCustomerPanel();
+		}
+		else if(event.getSource() == MainUserPanel.getM_UserSearchCustomerPanel().getBtnSearch())
+		{
+			DirPanel.getM_Controller().SearchCustomer();
+		}
+		else if(event.getSource() == MainUserPanel.getM_SearchedCustomerPanel().getbtnHistory())
+		{
+			DirPanel.getM_Controller().ShowCustomerHistory();
 		}
 		else if(event.getSource() == MainUserPanel.getM_UserCustomersPanel().getBtnRemoveCustomer())
 		{

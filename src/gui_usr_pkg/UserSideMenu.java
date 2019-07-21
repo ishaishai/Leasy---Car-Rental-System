@@ -18,6 +18,7 @@ public class UserSideMenu extends BasePanel  {
 	private static JButton btnViewInvoices;
 	private static JButton btnViewVehicles;
 	private static JButton btnViewCustomers;
+	private static JButton btnSearchCustomer;
 	
 	public UserSideMenu()
 	{		
@@ -66,6 +67,19 @@ public class UserSideMenu extends BasePanel  {
 		btnViewCustomers.addMouseListener(new MyMouseListener());
 		add(btnViewCustomers);
 		
+		btnSearchCustomer = new JButton("Search customer");
+		btnSearchCustomer.setFocusPainted(false);
+		btnSearchCustomer.setFocusable(false);
+		btnSearchCustomer.setRequestFocusEnabled(false);
+		btnSearchCustomer.setContentAreaFilled(false);
+		btnSearchCustomer.setBorderPainted(true);
+		btnSearchCustomer.setBackground(new Color(17, 41, 64));
+		btnSearchCustomer.setBorder(new LineBorder(Color.WHITE, 2, true));
+		btnSearchCustomer.setForeground(Color.WHITE);
+		btnSearchCustomer.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		btnSearchCustomer.setBounds(17, 251, 190, 36);
+		btnSearchCustomer.addMouseListener(new MyMouseListener());
+		add(btnSearchCustomer);
 		
 		/*JButton button = new JButton("Search customer");
 		button.setRequestFocusEnabled(false);
@@ -81,6 +95,26 @@ public class UserSideMenu extends BasePanel  {
 		add(button);
 		*/
 	}
+
+	
+	
+	public BaseLabel getBslblMenu() {
+		return bslblMenu;
+	}
+
+
+
+	public static JButton getBtnViewCustomers() {
+		return btnViewCustomers;
+	}
+
+
+
+	public static JButton getBtnSearchCustomer() {
+		return btnSearchCustomer;
+	}
+
+
 
 	public static final JButton getBtnViewInvoices() {
 		return btnViewInvoices;
